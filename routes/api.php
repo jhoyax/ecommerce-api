@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +11,13 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::namespace('API')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::post('login', 'LoginController@login');
+        Route::post('register', 'RegisterController@store');
+    });
+
+    Route::middleware('auth:airlock')->group(function () {
+        Route::post('logout', 'LoginController@logout');
+    });
 });
