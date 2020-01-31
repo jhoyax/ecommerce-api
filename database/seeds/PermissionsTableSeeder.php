@@ -14,10 +14,15 @@ class PermissionsTableSeeder extends Seeder
     public function run()
     {
         $role = Role::findByName('admin', 'api');
+
         $permissions = [
             ['name' => 'create products', 'guard_name' => 'api'],
             ['name' => 'edit products', 'guard_name' => 'api'],
             ['name' => 'delete products', 'guard_name' => 'api'],
+
+            ['name' => 'create product categories', 'guard_name' => 'api'],
+            ['name' => 'edit product categories', 'guard_name' => 'api'],
+            ['name' => 'delete product categories', 'guard_name' => 'api'],
         ];
         
         foreach ($permissions as $permission) {

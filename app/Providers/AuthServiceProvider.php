@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Eloquent\Product;
+use App\Eloquent\ProductCategory;
+use App\Policies\ProductCategoryPolicy;
 use App\Policies\ProductPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
         Product::class => ProductPolicy::class,
+        ProductCategory::class => ProductCategoryPolicy::class,
     ];
 
     /**

@@ -65,4 +65,14 @@ class Product extends Model
 
         return $slug;
     }
+
+	/**
+	 * Get all categories of the product.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function categories()
+	{
+		return $this->hasMany(ProductCategory::class)->latest('updated_at');
+	}
 }
