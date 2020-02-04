@@ -12,6 +12,8 @@ class ProductCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(ProductCategory::class, 4)->create();
+        factory(ProductCategory::class, 4)->create()->each(function($product_category) {
+            $product_category->addMedia(storage_path('images/product-categories/' . $product_category->id . '.jpg'))->toMediaCollection('images');
+        });
     }
 }

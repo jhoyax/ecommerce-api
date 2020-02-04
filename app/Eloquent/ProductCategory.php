@@ -4,9 +4,13 @@ namespace App\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class ProductCategory extends Model
+class ProductCategory extends Model implements HasMedia
 {
+    use HasMediaTrait;
+
     /**
      * The attributes that are mass assignable.
      *

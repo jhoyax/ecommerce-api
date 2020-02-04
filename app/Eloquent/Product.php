@@ -4,9 +4,13 @@ namespace App\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
+    use HasMediaTrait;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -66,13 +70,13 @@ class Product extends Model
         return $slug;
     }
 
-	/**
-	 * Get all categories of the product.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function categories()
-	{
-		return $this->hasMany(ProductCategory::class)->latest('updated_at');
-	}
+    /**
+     * Get all categories of the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function categories()
+    {
+        return $this->hasMany(ProductCategory::class)->latest('updated_at');
+    }
 }

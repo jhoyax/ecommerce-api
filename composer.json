@@ -14,6 +14,7 @@
         "laravel/airlock": "^0.2.0",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
+        "spatie/laravel-medialibrary": "^7.18",
         "spatie/laravel-permission": "^3.6"
     },
     "require-dev": {

@@ -14,6 +14,8 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         factory(Product::class, 25)->create()->each(function ($product) {
+            $product->addMedia(storage_path('images/products/' . $product->id . '.jpg'))->toMediaCollection('images');
+
             $product_category = ProductCategory::inRandomOrder()->first();
             $product_category->addProduct($product);
         });

@@ -24,6 +24,10 @@ class ProductResource extends JsonResource
             'discount' => $this->discount,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
+            'image' => [
+                'name' => $this->getFirstMedia('images')->file_name ?? '',
+                'url' => $this->getFirstMedia('images')->getFullUrl() ?? '',
+            ],
         ];
     }
 }
