@@ -77,6 +77,55 @@ class Product extends Model implements HasMedia
      */
     public function categories()
     {
-        return $this->hasMany(ProductCategory::class)->latest('updated_at');
+        return $this->belongsToMany(ProductCategory::class, 'category_product')->withTimestamps();
+    }
+
+    /**
+     * Get products by category ids
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGetByCategoryIds($query, $ids)
+    {
+        if ($ids) {
+            return $query->whereHas('categories', function ($query) use ($ids) {
+                $query->whereIn('category_product.product_category_id', $ids);
+            });
+        }
+        return $query;
+    }
+
+    /**
+     * Sort by
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortBy($query, $sort)
+    {
+        switch ($sort) {
+            case 'price-asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price-desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'title-asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'title-desc':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'date-asc':
+                $query->oldest();
+                break;
+            case 'date-desc':
+                $query->latest();
+                break;
+            default:
+                $query->latest();
+        }
+        return $query;
     }
 }

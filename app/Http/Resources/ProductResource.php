@@ -22,11 +22,11 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'stock' => $this->stock,
             'discount' => $this->discount,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at->toDateString(),
+            'updated_at' => $this->updated_at->toDateString(),
             'image' => [
                 'name' => $this->getFirstMedia('images')->file_name ?? '',
-                'url' => $this->getFirstMedia('images')->getFullUrl() ?? '',
+                'url' => $this->getFirstMedia('images') ? $this->getFirstMedia('images')->getFullUrl() : '',
             ],
         ];
     }

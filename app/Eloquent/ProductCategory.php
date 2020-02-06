@@ -2,7 +2,9 @@
 
 namespace App\Eloquent;
 
+use App\Http\Resources\ProductCategoryResource;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -40,14 +42,36 @@ class ProductCategory extends Model implements HasMedia
         return 'slug';
     }
 
-    public function productCategories()
+    /**
+     * Get all sub categories for the category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children()
     {
         return $this->hasMany(ProductCategory::class);
     }
 
-    public function childrenProductCategories()
+    /**
+     * Recursive relationship
+     * Get all level of sub categories for the category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function childrenRecursive()
     {
-        return $this->hasMany(ProductCategory::class)->with('productCategories');
+        return $this->children()->with('childrenRecursive');
+    }
+
+    /**
+     * Scope a query to only top parent category.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeTopParent($query)
+    {
+        return $query->whereNull('product_category_id');
     }
 
     /**
@@ -87,5 +111,57 @@ class ProductCategory extends Model implements HasMedia
     public function products()
     {
         return $this->belongsToMany(Product::class, 'category_product')->withTimestamps();
+    }
+
+    /**
+     * Get children by parent
+     *
+     * @param  App\Eloquent\ProductCategory  $category
+     * @return array
+     */
+    public static function getChildren($category)
+    {
+        $children = [];
+        foreach ($category->childrenRecursive as $childCategory) {
+            $children[] = new ProductCategoryResource($childCategory);
+        }
+
+        return $children;
+    }
+
+    /**
+     * Get children ids by parent
+     *
+     * @param  App\Eloquent\ProductCategory  $category
+     * @return array
+     */
+    public static function getChildrenIds($category)
+    {
+        if ($category) {
+            $childrenRecursive = $category->childrenRecursive;
+            $ids = array_merge(
+                [ $category->id ], // include self
+                $childrenRecursive->pluck('id')->toArray()
+            );
+    
+            foreach ($childrenRecursive as $child) {
+                $ids = array_merge($ids, self::getChildrenIds($child));
+            }
+    
+            return $ids;
+        }
+        
+        return [];
+    }
+
+    /**
+     * Get children ids by parent
+     *
+     * @param  App\Eloquent\ProductCategory  $category
+     * @return int
+     */
+    public static function getTotalProducts($category)
+    {
+        return Product::getByCategoryIds(self::getChildrenIds($category))->count();
     }
 }

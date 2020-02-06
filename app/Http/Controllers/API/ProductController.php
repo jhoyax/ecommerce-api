@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Eloquent\Product;
+use App\Eloquent\ProductCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -18,7 +19,13 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        return ProductResource::collection(Product::paginate($request->input('per_page')));
+        $categoryIds = ProductCategory::getChildrenIds(ProductCategory::find($request->get('category')));
+        
+        return ProductResource::collection(
+            Product::getByCategoryIds($categoryIds)
+                ->sortBy($request->input('sort'))
+                ->paginate($request->input('per_page'))
+        );
     }
 
     /**

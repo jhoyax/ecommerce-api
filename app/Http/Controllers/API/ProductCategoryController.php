@@ -14,9 +14,13 @@ class ProductCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProductCategoryResource::collection(ProductCategory::paginate());
+        $productCategories = ProductCategory::topParent()
+                                ->with('childrenRecursive')
+                                ->get();
+
+        return ProductCategoryResource::collection($productCategories);
     }
 
     /**
